@@ -22,6 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TripOptionsActivity"
+            android:exported="false"
+            android:label="Opções de Viagem"
+            android:theme="@style/Theme.FastTripPlanner" />
     </application>
 
 </manifest>
