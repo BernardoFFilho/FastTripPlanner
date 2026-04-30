@@ -27,6 +27,11 @@
             android:exported="false"
             android:label="Opções de Viagem"
             android:theme="@style/Theme.FastTripPlanner" />
+        <activity
+            android:name=".TripSummaryActivity"
+            android:exported="false"
+            android:label="Resumo da Viagem"
+            android:theme="@style/Theme.FastTripPlanner" />
     </application>
 
 </manifest>
