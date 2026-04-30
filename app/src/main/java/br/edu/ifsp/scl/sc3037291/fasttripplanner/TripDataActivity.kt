@@ -79,7 +79,6 @@ class TripDataActivity : ComponentActivity() {
 
 /**
  * Composable que desenha a interface da Tela 1 com Material Design 3.
- * @param onNavigateNext Callback disparado quando os dados são validados com sucesso.
  */
 @Composable
 fun TripDataScreen(onNavigateNext: (String, Int, Double) -> Unit) {
@@ -119,14 +118,12 @@ fun TripDataScreen(onNavigateNext: (String, Int, Double) -> Unit) {
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // OutlinedTextField: Componente MD3 com contorno e label flutuante
                 OutlinedTextField(
                     value = destination,
                     onValueChange = { destination = it },
                     label = { Text("Destino") },
                     modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Ex: Paris, França") },
-                    // KeyboardOptions.Words: Capitaliza a primeira letra de cada palavra digitada
+                    placeholder = { Text("Ex: Piracicaba, Bauru...") },
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words
                     ),
@@ -138,7 +135,6 @@ fun TripDataScreen(onNavigateNext: (String, Int, Double) -> Unit) {
                     onValueChange = { days = it },
                     label = { Text("Quantidade de Dias") },
                     modifier = Modifier.fillMaxWidth(),
-                    // KeyboardType.Number: Abre o teclado numérico para facilitar a entrada do usuário
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number
                     ),
@@ -150,7 +146,6 @@ fun TripDataScreen(onNavigateNext: (String, Int, Double) -> Unit) {
                     onValueChange = { budget = it },
                     label = { Text("Orçamento Diário (R$)") },
                     modifier = Modifier.fillMaxWidth(),
-                    // KeyboardType.Decimal: Abre o teclado com ponto/vírgula para valores monetários
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal
                     ),

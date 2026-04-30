@@ -4,15 +4,33 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.edu.ifsp.scl.sc3037291.fasttripplanner.domain.TripCostCalculator
 import br.edu.ifsp.scl.sc3037291.fasttripplanner.ui.theme.FastTripPlannerTheme
@@ -90,41 +108,131 @@ fun TripSummaryScreen(
     hasFood: Boolean,
     hasTours: Boolean,
     totalCost: Double,
-    onNewTrip: () -> Unit // Callback executado quando o usuário clica em "Novo Planejamento"
+    onNewTrip: () -> Unit
 ) {
-    // Coluna simples para organizar os elementos verticalmente (interface crua)
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Título da tela
-        Text(text = "Resumo da Viagem", style = MaterialTheme.typography.headlineMedium)
-
-        // Exibição dos dados inseridos pelo usuário
-        Text(text = "Destino: $destination")
-        Text(text = "Dias: $days")
-        Text(text = "Orçamento Diário: R$ %.2f".format(dailyBudget))
-        Text(text = "Tipo de Hospedagem: $hostingType")
-
-        // Exibição dos serviços adicionais (convertendo Boolean para texto amigável)
-        Text(text = "Transporte incluso: ${if (hasTransport) "Sim" else "Não"}")
-        Text(text = "Alimentação inclusa: ${if (hasFood) "Sim" else "Não"}")
-        Text(text = "Passeios inclusos: ${if (hasTours) "Sim" else "Não"}")
-
-        // Exibição do valor total calculado, com destaque visual
         Text(
-            text = "Custo Total: R$ %.2f".format(totalCost),
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(top = 16.dp)
+            text = "Resumo do Planejamento",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(bottom = 24.dp),
+            textAlign = TextAlign.Center
         )
 
-        // Botão para reiniciar o fluxo do aplicativo
+        // Card em estilo 'Recibo': Agrupa todas as informações em uma superfície elevada
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            )
+        ) {
+            Column(modifier = Modifier.padding(20.dp)) {
+
+                // Seção 1: Dados Básicos
+                Text(
+                    text = "Dados do Destino",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                ReceiptRow(label = "Destino", value = destination)
+                ReceiptRow(label = "Duração", value = "$days dias")
+                ReceiptRow(label = "Orçamento Diário", value = "R$ %.2f".format(dailyBudget))
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+
+                // Seção 2: Preferências e Serviços
+                Text(
+                    text = "Serviços Contratados",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                ReceiptRow(label = "Hospedagem", value = hostingType)
+                ReceiptRow(label = "Transporte", value = if (hasTransport) "Incluso" else "Não incluso")
+                ReceiptRow(label = "Alimentação", value = if (hasFood) "Inclusa" else "Não inclusa")
+                ReceiptRow(label = "Passeios", value = if (hasTours) "Inclusos" else "Não inclusos")
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+
+                // Seção 3: Totalizadores
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Text(
+                        text = "TOTAL ESTIMADO",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "R$ %.2f".format(totalCost),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Botão de ação principal fora do Card, fixado na parte inferior
         Button(
             onClick = onNewTrip,
-            modifier = Modifier.padding(top = 24.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(top = 16.dp),
+            shape = MaterialTheme.shapes.medium
         ) {
-            Text(text = "Novo Planejamento")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Novo Planejamento", style = MaterialTheme.typography.titleMedium)
+            }
         }
+    }
+}
+
+/**
+ * Componente auxiliar para renderizar uma linha de recibo padronizada.
+ */
+@Composable
+fun ReceiptRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }

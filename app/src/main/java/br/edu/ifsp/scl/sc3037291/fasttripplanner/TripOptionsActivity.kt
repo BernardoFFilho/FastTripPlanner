@@ -105,7 +105,6 @@ fun TripOptionsScreen(
         )
 
         // RadioButtons para Tipo de Hospedagem
-        // UX: Seção envolvida em um Card para agrupamento visual (MD3)
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -119,7 +118,6 @@ fun TripOptionsScreen(
                 )
 
                 // Lista de Opções (RadioButtons)
-                // UX: Row clicável para aumentar a área de toque, facilitando a interação
                 val options = listOf("Econômica", "Conforto", "Luxo")
                 options.forEach { option ->
                     Row(
@@ -154,7 +152,6 @@ fun TripOptionsScreen(
                 )
 
                 // Opção Transporte
-                // UX: Modifier.clickable na Row permite selecionar ao clicar no texto (maior área de toque)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -204,7 +201,6 @@ fun TripOptionsScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         // Botões de ação
-        // UX: Uso de weight(1f) na Row horizontal para equilíbrio visual entre os botões
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
