@@ -62,7 +62,7 @@ class TripSummaryActivity : ComponentActivity() {
                         onNewTrip = {
                             // Cria Intent explícita para retornar à primeira tela
                             val nextIntent = Intent(this, TripDataActivity::class.java).apply {
-                                // Adiciona flags para limpar todo o backstack (histórico)
+                                // Adiciona flags para limpar tod o backstack (histórico)
                                 // e criar uma nova tarefa, reiniciando o planejamento do zero.
                                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                             }

@@ -18,18 +18,24 @@ import androidx.compose.runtime.setValue
 import br.edu.ifsp.scl.sc3037291.fasttripplanner.ui.theme.FastTripPlannerTheme
 import br.edu.ifsp.scl.sc3037291.fasttripplanner.utils.IntentKeys
 
+/**
+ * Activity da Tela 2: Opções da Viagem.
+ * Permite selecionar a hospedagem e serviços adicionais.
+ */
 class TripOptionsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             FastTripPlannerTheme {
                 TripOptionsScreen(
-                    onBack = { finish() },
+                    onBack = { finish() }, // Encerra a activity atual e volta para a tela 1
                     onCalculate = { hostingType, hasTransport, hasFood, hasTours ->
+                        // Recupera os dados enviados pela Tela 1 via Intent
                         val destination = intent.getStringExtra(IntentKeys.DESTINATION) ?: ""
                         val days = intent.getIntExtra(IntentKeys.DAYS, 0)
                         val budget = intent.getDoubleExtra(IntentKeys.DAILY_BUDGET, 0.0)
 
+                        // Cria uma Intent explícita para a Tela 3 combinando todos os dados coletados
                         val summaryIntent = Intent(this, TripSummaryActivity::class.java).apply {
                             putExtra(IntentKeys.DESTINATION, destination)
                             putExtra(IntentKeys.DAYS, days)
@@ -47,18 +53,22 @@ class TripOptionsActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Composable que desenha a interface da Tela 2.
+ */
 @Composable
 fun TripOptionsScreen(
     onBack: () -> Unit,
     onCalculate: (String, Boolean, Boolean, Boolean) -> Unit
 ) {
+    // Gerenciamento de estado (sobrevive à rotação da tela)
     var hostingType by rememberSaveable { mutableStateOf("Econômica") }
     var hasTransport by rememberSaveable { mutableStateOf(false) }
     var hasFood by rememberSaveable { mutableStateOf(false) }
     var hasTours by rememberSaveable { mutableStateOf(false) }
 
     Column {
-        // RadioButtons para Tipo de Hospedagem
+        // RadioButtons para Tipo de Hospedagem (escolha única)
         Row {
             RadioButton(
                 selected = hostingType == "Econômica",
@@ -81,7 +91,7 @@ fun TripOptionsScreen(
             Text("Luxo")
         }
 
-        // Checkboxes para Opções Adicionais
+        // Checkboxes para Opções Adicionais (múltipla escolha)
         Row {
             Checkbox(
                 checked = hasTransport,
@@ -104,9 +114,9 @@ fun TripOptionsScreen(
             Text("Passeios")
         }
 
-        // Botões de ação
-        Button(onClick = { 
-            onCalculate(hostingType, hasTransport, hasFood, hasTours) 
+        // Botões de ação para avançar ou recuar
+        Button(onClick = {
+            onCalculate(hostingType, hasTransport, hasFood, hasTours)
         }) {
             Text("Calcular")
         }
