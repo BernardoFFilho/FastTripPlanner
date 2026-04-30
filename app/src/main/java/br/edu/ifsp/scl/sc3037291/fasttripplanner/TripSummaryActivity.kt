@@ -1,17 +1,21 @@
 package br.edu.ifsp.scl.sc3037291.fasttripplanner
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import br.edu.ifsp.scl.sc3037291.fasttripplanner.domain.TripCostCalculator
+import br.edu.ifsp.scl.sc3037291.fasttripplanner.ui.theme.FastTripPlannerTheme
 import br.edu.ifsp.scl.sc3037291.fasttripplanner.utils.IntentKeys
 
 class TripSummaryActivity : ComponentActivity() {
@@ -38,8 +42,40 @@ class TripSummaryActivity : ComponentActivity() {
             hasFood = hasFood,
             hasTours = hasTours
         )
+
+        // Define a interface da tela passando os dados processados para o Composable
+        setContent {
+            FastTripPlannerTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    TripSummaryScreen(
+                        destination = destination,
+                        days = days,
+                        dailyBudget = dailyBudget,
+                        hostingType = hostingType,
+                        hasTransport = hasTransport,
+                        hasFood = hasFood,
+                        hasTours = hasTours,
+                        totalCost = totalCost,
+                        onNewTrip = {
+                            // Cria Intent explícita para retornar à primeira tela
+                            val nextIntent = Intent(this, TripDataActivity::class.java).apply {
+                                // Adiciona flags para limpar todo o backstack (histórico)
+                                // e criar uma nova tarefa, reiniciando o planejamento do zero.
+                                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                            }
+                            startActivity(nextIntent)
+                            finish() // Encerra a Activity atual para não ficar presa na memória
+                        }
+                    )
+                }
+            }
+        }
     }
 }
+
 /**
  * Composable responsável por renderizar a interface visual do resumo da viagem.
  * É um componente "burro" (stateless), que apenas recebe os dados formatados e os exibe.
