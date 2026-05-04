@@ -10,7 +10,7 @@ O **FastTripPlanner** é um aplicativo Android desenvolvido para facilitar o pla
 
 ## 🎥 Demonstração
 
-**Link para o vídeo de apresentação:** Ainda não possui*
+**Link para o vídeo de apresentação:** https://youtube.com/shorts/3xY_2iQRaPg?feature=share
 
 ---
 
@@ -72,4 +72,4 @@ Este projeto foi construído seguindo exigências técnicas estritas:
 
 1. Clone o repositório:
    ```bash
-   git clone https://github.com/SEU_USUARIO/FastTripPlanner.git
+   git clone https://github.com/BernardoFFilho/FastTripPlanner.git
