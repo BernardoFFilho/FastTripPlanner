@@ -1,28 +1,28 @@
 package br.edu.ifsp.scl.sc3037291.fasttripplanner.utils
 
 /**
- * Object containing keys used to pass data between Activities via Intent.
- * Centralizing these keys improves maintainability.
+ * Objeto contendo as chaves usadas para passar dados entre Activities via Intent.
+ * Centralizar essas chaves melhora a manutenibilidade e evita erros de digitação.
  */
 object IntentKeys {
-    /** The trip destination name (String) */
+    /** O nome do destino da viagem (String) */
     const val DESTINATION = "EXTRA_DESTINATION"
-    
-    /** Number of days for the trip (Int) */
+
+    /** Número de dias da viagem (Int) */
     const val DAYS = "EXTRA_DAYS"
-    
-    /** Daily budget amount (Double/Float) */
+
+    /** Valor do orçamento diário (Double) */
     const val DAILY_BUDGET = "EXTRA_DAILY_BUDGET"
-    
-    /** Type of hosting/accommodation (String) */
+
+    /** Tipo de hospedagem selecionada (String) */
     const val HOSTING_TYPE = "EXTRA_HOSTING_TYPE"
-    
-    /** Whether transport is included (Boolean) */
+
+    /** Se o transporte está incluso (Boolean) */
     const val HAS_TRANSPORT = "EXTRA_HAS_TRANSPORT"
-    
-    /** Whether food/meals are included (Boolean) */
+
+    /** Se a alimentação está inclusa (Boolean) */
     const val HAS_FOOD = "EXTRA_HAS_FOOD"
-    
-    /** Whether tours are included (Boolean) */
+
+    /** Se os passeios estão inclusos (Boolean) */
     const val HAS_TOURS = "EXTRA_HAS_TOURS"
 }

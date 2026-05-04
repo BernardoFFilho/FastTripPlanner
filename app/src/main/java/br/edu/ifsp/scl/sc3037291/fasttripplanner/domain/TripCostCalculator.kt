@@ -1,12 +1,12 @@
 package br.edu.ifsp.scl.sc3037291.fasttripplanner.domain
 
 /**
- * Utility for calculating the total cost of a trip based on various parameters.
- * Decoupled from UI components for better testability and maintenance.
+ * Utilitário para calcular o custo total de uma viagem com base em vários parâmetros.
+ * Desacoplado dos componentes de UI para melhor testabilidade e manutenção.
  */
 object TripCostCalculator {
 
-    /** Calculates the total trip cost according to predefined rules.*/
+    /** Calcula o custo total da viagem de acordo com regras predefinidas.*/
     fun calculateTotalCost(
         days: Int,
         dailyBudget: Double,
@@ -15,17 +15,17 @@ object TripCostCalculator {
         hasFood: Boolean,
         hasTours: Boolean
     ): Double {
-        // baseCost = days * budget
+        // custoBase = dias * orçamento
         val baseCost = days * dailyBudget
 
-        // Multiplier: Econômica (1.0), Conforto (1.5), Luxo (2.2)
+        // Multiplicador: Econômica (1.0), Conforto (1.5), Luxo (2.2)
         val multiplier = when (hostingType) {
             "Luxo" -> 2.2
             "Conforto" -> 1.5
-            else -> 1.0 // "Econômica" or default
+            else -> 1.0 // "Econômica" ou padrão
         }
 
-        // Extras: Transport (+300 fixed), Food (+50 * days), Tours (+120 * days)
+        // Extras: Transporte (+300 fixo), Alimentação (+50 * dias), Passeios (+120 * dias)
         var extras = 0.0
         if (hasTransport) extras += 300.0
         if (hasFood) extras += 50.0 * days
