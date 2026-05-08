@@ -25,4 +25,7 @@ object IntentKeys {
 
     /** Se os passeios estão inclusos (Boolean) */
     const val HAS_TOURS = "EXTRA_HAS_TOURS"
+
+    /** Se o modo econômico está ativado (Boolean) */
+    const val IS_ECONOMIC_MODE = "EXTRA_IS_ECONOMIC_MODE"
 }

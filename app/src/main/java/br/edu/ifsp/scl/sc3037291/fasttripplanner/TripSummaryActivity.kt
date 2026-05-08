@@ -50,6 +50,7 @@ class TripSummaryActivity : ComponentActivity() {
         val hasTransport = intent.getBooleanExtra(IntentKeys.HAS_TRANSPORT, false)
         val hasFood = intent.getBooleanExtra(IntentKeys.HAS_FOOD, false)
         val hasTours = intent.getBooleanExtra(IntentKeys.HAS_TOURS, false)
+        val isEconomicMode = intent.getBooleanExtra(IntentKeys.IS_ECONOMIC_MODE, false)
 
         // Processa as regras de negócio chamando o calculador de domínio isolado
         val totalCost = TripCostCalculator.calculateTotalCost(
@@ -58,7 +59,8 @@ class TripSummaryActivity : ComponentActivity() {
             hostingType = hostingType,
             hasTransport = hasTransport,
             hasFood = hasFood,
-            hasTours = hasTours
+            hasTours = hasTours,
+            isEconomicMode = isEconomicMode
         )
 
         // Define a interface da tela passando os dados processados para o Composable
@@ -76,6 +78,7 @@ class TripSummaryActivity : ComponentActivity() {
                         hasTransport = hasTransport,
                         hasFood = hasFood,
                         hasTours = hasTours,
+                        isEconomicMode = isEconomicMode,
                         totalCost = totalCost,
                         onNewTrip = {
                             // Cria Intent explícita para retornar à primeira tela
@@ -107,6 +110,7 @@ fun TripSummaryScreen(
     hasTransport: Boolean,
     hasFood: Boolean,
     hasTours: Boolean,
+    isEconomicMode: Boolean,
     totalCost: Double,
     onNewTrip: () -> Unit
 ) {
@@ -164,6 +168,10 @@ fun TripSummaryScreen(
                 ReceiptRow(label = "Transporte", value = if (hasTransport) "Incluso" else "Não incluso")
                 ReceiptRow(label = "Alimentação", value = if (hasFood) "Inclusa" else "Não inclusa")
                 ReceiptRow(label = "Passeios", value = if (hasTours) "Inclusos" else "Não inclusos")
+
+                if (isEconomicMode) {
+                    ReceiptRow(label = "Modo Econômico", value = "Ativado (-15%)")
+                }
 
                 HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
 

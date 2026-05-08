@@ -13,10 +13,14 @@ object TripCostCalculator {
         hostingType: String,
         hasTransport: Boolean,
         hasFood: Boolean,
-        hasTours: Boolean
+        hasTours: Boolean,
+        isEconomicMode: Boolean = false
     ): Double {
-        // custoBase = dias * orçamento
-        val baseCost = days * dailyBudget
+        // Aplica desconto de 15% no orçamento diário se o Modo Econômico estiver ativo
+        val effectiveDailyBudget = if (isEconomicMode) dailyBudget * 0.85 else dailyBudget
+        
+        // custoBase = dias * orçamento (com desconto se aplicável)
+        val baseCost = days * effectiveDailyBudget
 
         // Multiplicador: Econômica (1.0), Conforto (1.5), Luxo (2.2)
         val multiplier = when (hostingType) {

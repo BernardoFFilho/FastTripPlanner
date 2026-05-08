@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,7 +50,7 @@ class TripOptionsActivity : ComponentActivity() {
                 ) {
                     TripOptionsScreen(
                         onBack = { finish() }, // Encerra a activity atual e volta para a tela 1
-                        onCalculate = { hostingType, hasTransport, hasFood, hasTours ->
+                        onCalculate = { hostingType, hasTransport, hasFood, hasTours, isEconomicMode ->
                             // Recupera os dados enviados pela Tela 1 via Intent
                             val destination = intent.getStringExtra(IntentKeys.DESTINATION) ?: ""
                             val days = intent.getIntExtra(IntentKeys.DAYS, 0)
@@ -64,6 +65,7 @@ class TripOptionsActivity : ComponentActivity() {
                                 putExtra(IntentKeys.HAS_TRANSPORT, hasTransport)
                                 putExtra(IntentKeys.HAS_FOOD, hasFood)
                                 putExtra(IntentKeys.HAS_TOURS, hasTours)
+                                putExtra(IntentKeys.IS_ECONOMIC_MODE, isEconomicMode)
                             }
                             startActivity(summaryIntent)
                         }
@@ -80,12 +82,17 @@ class TripOptionsActivity : ComponentActivity() {
 @Composable
 fun TripOptionsScreen(
     onBack: () -> Unit,
-    onCalculate: (String, Boolean, Boolean, Boolean) -> Unit
+    onCalculate: (String, Boolean, Boolean, Boolean, Boolean) -> Unit
 ) {
     var hostingType by rememberSaveable { mutableStateOf("Econômica") }
     var hasTransport by rememberSaveable { mutableStateOf(false) }
     var hasFood by rememberSaveable { mutableStateOf(false) }
     var hasTours by rememberSaveable { mutableStateOf(false) }
+    var isEconomicMode by rememberSaveable { mutableStateOf(false) }
+
+    // Backup de estados para restaurar quando o modo economico for desativado
+    var savedHostingType by rememberSaveable { mutableStateOf("Econômica") }
+    var savedHasTours by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -104,6 +111,39 @@ fun TripOptionsScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Select do Modo Econômico
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Modo Econômico (-15%)",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium
+            )
+            Switch(
+                checked = isEconomicMode,
+                onCheckedChange = { active ->
+                    isEconomicMode = active
+                    if (active) {
+                        // Salva estado atual antes de forçar valores
+                        savedHostingType = hostingType
+                        savedHasTours = hasTours
+                        // Força valores do modo econômico
+                        hostingType = "Econômica"
+                        hasTours = false
+                    } else {
+                        // Restaura valores anteriores
+                        hostingType = savedHostingType
+                        hasTours = savedHasTours
+                    }
+                }
+            )
+        }
+
         // RadioButtons para Tipo de Hospedagem
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -120,25 +160,30 @@ fun TripOptionsScreen(
                 // Lista de Opções (RadioButtons)
                 val options = listOf("Econômica", "Conforto", "Luxo")
                 options.forEach { option ->
+                    val isEnabled = !isEconomicMode
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { hostingType = option }
+                            .clickable(enabled = isEnabled) { hostingType = option }
                             .padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
                             selected = (hostingType == option),
-                            onClick = { hostingType = option }
+                            onClick = { hostingType = option },
+                            enabled = isEnabled
                         )
-                        Text(text = option, style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            text = option,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = if (isEnabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                        )
                     }
                 }
             }
         }
 
         // Checkboxes para Opções Adicionais
-        // UX: Uso de Card para separar logicamente as opções de serviços
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -182,18 +227,24 @@ fun TripOptionsScreen(
                 }
 
                 // Opção Passeios
+                val isToursEnabled = !isEconomicMode
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { hasTours = !hasTours }
+                        .clickable(enabled = isToursEnabled) { hasTours = !hasTours }
                         .padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
                         checked = hasTours,
-                        onCheckedChange = { hasTours = it }
+                        onCheckedChange = { hasTours = it },
+                        enabled = isToursEnabled
                     )
-                    Text(text = "Passeios", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        text = "Passeios",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = if (isToursEnabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    )
                 }
             }
         }
@@ -214,7 +265,7 @@ fun TripOptionsScreen(
             }
 
             Button(
-                onClick = { onCalculate(hostingType, hasTransport, hasFood, hasTours) },
+                onClick = { onCalculate(hostingType, hasTransport, hasFood, hasTours, isEconomicMode) },
                 modifier = Modifier.weight(1f),
                 shape = MaterialTheme.shapes.medium
             ) {
